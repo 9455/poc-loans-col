@@ -1,0 +1,39 @@
+{
+  "name": "poc-loans-frontend",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@radix-ui/react-tooltip": "^1.2.8",
+    "@rainbow-me/rainbowkit": "^2.2.9",
+    "@tanstack/react-query": "^5.90.12",
+    "canvas-confetti": "^1.9.4",
+    "ethers": "^6.16.0",
+    "framer-motion": "^12.23.25",
+    "lucide-react": "^0.556.0",
+    "react": "^19.2.0",
+    "react-countup": "^6.5.3",
+    "react-dom": "^19.2.0",
+    "react-router-dom": "^7.10.1",
+    "sonner": "^2.0.7",
+    "viem": "^2.41.2",
+    "wagmi": "^2.19.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "@types/react": "^19.2.5",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.1",
+    "eslint": "^9.39.1",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.24",
+    "globals": "^16.5.0",
+    "vite": "^7.2.4"
+  }
+}
