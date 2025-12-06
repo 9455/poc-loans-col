@@ -1,0 +1,414 @@
+/* Loan Education Container */
+.loan-education {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 1rem 0;
+}
+
+/* Section */
+.education-section {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 1.5rem;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+    color: var(--text-primary, #fff);
+}
+
+.section-header h4 {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.section-header.warning {
+    color: #f59e0b;
+}
+
+/* Fee Cards */
+.fee-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.fee-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 1.25rem;
+    transition: all 0.3s;
+}
+
+.fee-card:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+.fee-card.platform-fee {
+    border-left: 3px solid #3b82f6;
+}
+
+.fee-card.protocol-fee {
+    border-left: 3px solid #9333ea;
+}
+
+.fee-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.fee-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-secondary, #888);
+}
+
+.info-icon {
+    color: var(--text-secondary, #888);
+    cursor: help;
+}
+
+.fee-amount {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #3b82f6;
+    margin-bottom: 0.75rem;
+}
+
+.interest-amount {
+    color: #9333ea;
+}
+
+.period {
+    font-size: 1rem;
+    color: var(--text-secondary, #888);
+    font-weight: 500;
+}
+
+.fee-description {
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--text-secondary, #888);
+    margin-bottom: 0.75rem;
+}
+
+.fee-description strong {
+    color: var(--text-primary, #fff);
+}
+
+.fee-recipient {
+    font-size: 0.8125rem;
+    color: var(--text-secondary, #888);
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.fee-recipient strong {
+    color: var(--text-primary, #fff);
+}
+
+/* Total Receive */
+.total-receive {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    border-radius: 10px;
+    padding: 1.25rem;
+    text-align: center;
+}
+
+.total-label {
+    font-size: 0.875rem;
+    color: var(--text-secondary, #888);
+    margin-bottom: 0.5rem;
+}
+
+.total-amount {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #22c55e;
+}
+
+/* Interest Timeline */
+.interest-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.timeline-item {
+    display: grid;
+    grid-template-columns: 100px 1fr 120px;
+    gap: 1rem;
+    align-items: center;
+}
+
+.timeline-period {
+    font-weight: 600;
+    color: var(--text-primary, #fff);
+}
+
+.timeline-bar {
+    height: 32px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+}
+
+.timeline-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #3b82f6 0%, #9333ea 100%);
+    border-radius: 8px;
+    transition: width 0.5s ease;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 0.5rem;
+}
+
+.timeline-amount {
+    font-weight: 700;
+    color: #9333ea;
+    text-align: right;
+}
+
+.timeline-total {
+    grid-column: 2 / 4;
+    font-size: 0.8125rem;
+    color: var(--text-secondary, #888);
+    text-align: right;
+    margin-top: -0.5rem;
+}
+
+.interest-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: rgba(59, 130, 246, 0.05);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 8px;
+    font-size: 0.875rem;
+    color: var(--text-secondary, #888);
+}
+
+/* Liquidation Section */
+.liquidation-section {
+    border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.liquidation-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.liquidation-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 1.25rem;
+    text-align: center;
+    min-width: 200px;
+}
+
+.liquidation-card.danger {
+    background: rgba(239, 68, 68, 0.05);
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+.liquidation-label {
+    font-size: 0.875rem;
+    color: var(--text-secondary, #888);
+    margin-bottom: 0.5rem;
+}
+
+.liquidation-value {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.current-price {
+    color: #22c55e;
+}
+
+.liquidation-price {
+    color: #ef4444;
+}
+
+.price-drop {
+    font-size: 0.875rem;
+    color: #ef4444;
+    margin-top: 0.25rem;
+}
+
+.arrow-down {
+    color: #f59e0b;
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(10px); }
+}
+
+.liquidation-explanation {
+    background: rgba(239, 68, 68, 0.05);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: 8px;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+}
+
+.explanation-title {
+    font-weight: 600;
+    color: #ef4444;
+    margin-bottom: 0.75rem;
+}
+
+.explanation-list {
+    margin: 0;
+    padding-left: 1.5rem;
+    color: var(--text-secondary, #888);
+}
+
+.explanation-list li {
+    margin-bottom: 0.5rem;
+    line-height: 1.6;
+}
+
+.explanation-list strong {
+    color: var(--text-primary, #fff);
+}
+
+/* Safety Tips */
+.safety-tips {
+    background: rgba(34, 197, 94, 0.05);
+    border: 1px solid rgba(34, 197, 94, 0.2);
+    border-radius: 8px;
+    padding: 1.25rem;
+}
+
+.tip-title {
+    font-weight: 600;
+    color: #22c55e;
+    margin-bottom: 1rem;
+}
+
+.tips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.75rem;
+}
+
+.tip {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--text-secondary, #888);
+}
+
+.tip svg {
+    color: #22c55e;
+    flex-shrink: 0;
+}
+
+.tip strong {
+    color: var(--text-primary, #fff);
+}
+
+/* Summary */
+.education-summary {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(147, 51, 234, 0.05) 100%);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 12px;
+    padding: 1.5rem;
+}
+
+.summary-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 1.25rem;
+    color: var(--text-primary, #fff);
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+}
+
+.summary-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.summary-label {
+    font-size: 0.8125rem;
+    color: var(--text-secondary, #888);
+}
+
+.summary-value {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--text-primary, #fff);
+}
+
+.summary-value.highlight {
+    color: #3b82f6;
+}
+
+.summary-value.success {
+    color: #22c55e;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .fee-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .timeline-item {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+
+    .timeline-total {
+        grid-column: 1;
+        text-align: left;
+    }
+
+    .liquidation-info {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .arrow-down {
+        transform: rotate(90deg);
+    }
+
+    .tips-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .summary-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

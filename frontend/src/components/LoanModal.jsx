@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ShieldCheck, Info, CheckSquare, Square, Activity, HelpCircle } from 'lucide-react';
 import { useLoanExecution } from '../hooks/useLoanExecution';
-import { TOKENS, PROTOCOL_LOGOS } from '../utils/constants'; 
+import { TOKENS, PROTOCOL_LOGOS, API_URL } from '../utils/constants'; 
 import { logger } from '../utils/logger';
 import { useAccount, useBalance } from 'wagmi';
 import { LoadingAnimation } from './LoadingAnimation';
@@ -9,6 +9,7 @@ import confetti from 'canvas-confetti';
 import { Toaster, toast } from 'sonner';
 import CountUp from 'react-countup';
 import { Tooltip } from './ui/Tooltip';
+import { LoanEducation } from './LoanEducation';
 
 // Mock Prices for UX
 const PRICES = {
@@ -66,14 +67,39 @@ export function LoanModal({ strategy, tokenSymbol, isOpen, onClose }) {
   const [collateralAmount, setCollateralAmount] = useState('');
   const [isTermsAccepted, setIsTermsAccepted] = useState(false);
   const { executeLoan, status, errorMessage, txHash, resetStatus } = useLoanExecution();
+  const [originationFeeRate, setOriginationFeeRate] = useState(0);
 
+  // Fetch Fee Config
+  useEffect(() => {
+      if (isOpen) {
+          const fetchFees = async () => {
+              try {
+                  const res = await fetch(`${API_URL.replace('/api', '')}/api/loans/config/fees`);
+                  const data = await res.json();
+                  if (data.success && data.config?.LOAN_ORIGINATION) {
+                      setOriginationFeeRate(data.config.LOAN_ORIGINATION.percentage / 100);
+                  }
+              } catch (err) {
+                  console.error('Failed to load fees', err);
+              }
+          };
+          fetchFees();
+          
+          setCollateralAmount('');
+          setIsTermsAccepted(false);
+          resetStatus();
+          logger.info('Loan Modal Opened', { strategy, tokenSymbol });
+      }
+  }, [isOpen]);
+  
   // UX Calculations
   const price = (tokenSymbol && PRICES[tokenSymbol]) ? PRICES[tokenSymbol] : 0;
   const numericAmount = parseFloat(collateralAmount) || 0;
   const collateralValue = numericAmount * price;
   const ltv = 0.70; // 70% LTV
   const loanAmount = collateralValue * ltv;
-  const platformFee = loanAmount * 0.01;
+  // Dynamic Fee Calculation
+  const platformFee = loanAmount * originationFeeRate;
   const netReceive = loanAmount - platformFee;
   
   // Balance Check Logic
@@ -202,6 +228,25 @@ export function LoanModal({ strategy, tokenSymbol, isOpen, onClose }) {
                             {tokenSymbol}
                         </div>
                     </div>
+                    
+                    {/* Price Info */}
+                    {numericAmount > 0 && (
+                        <div style={{ 
+                            display: 'flex', 
+                            justifyContent: 'space-between', 
+                            marginTop: '0.5rem',
+                            fontSize: '0.85rem',
+                            color: 'var(--text-secondary)'
+                        }}>
+                            <span>
+                                {formatCurrency(price)} per {tokenSymbol}
+                            </span>
+                            <span style={{ color: 'var(--text-white)', fontWeight: '600' }}>
+                                ≈ {formatCurrency(collateralValue)}
+                            </span>
+                        </div>
+                    )}
+                    
                     {hasInsufficientBalance && (
                         <p style={{ color: 'var(--error)', fontSize: '0.8rem', marginTop: '4px' }}>
                             Insufficient balance
@@ -217,51 +262,18 @@ export function LoanModal({ strategy, tokenSymbol, isOpen, onClose }) {
                     </div>
                 </div>
 
-                {/* Simulation - ALWAYS Visible Logic */}
+                {/* Education & Fee Breakdown - Replaces simple simulation */}
                 {(loanAmount > 0 || collateralAmount) && (
-                    <div className="loan-simulation">
-                        <div className="sim-row">
-                            <Tooltip content="Loan-to-Value ratio: Percentage of collateral value you are borrowing. Max 70%.">
-                                <span style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
-                                    Loan to Value (LTV) <HelpCircle size={12} />
-                                </span>
-                            </Tooltip>
-                            <span>70%</span>
-                        </div>
-                        <div className="sim-row">
-                            <Tooltip content="Total USDC you will borrow based on your collateral.">
-                                <span style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
-                                    Borrow Amount (USDC) <HelpCircle size={12} />
-                                </span>
-                            </Tooltip>
-                            <span className="text-white">
-                                <CountUp 
-                                    end={loanAmount} 
-                                    prefix="$" 
-                                    decimals={2} 
-                                    separator="," 
-                                    duration={1} 
-                                />
-                            </span>
-                        </div>
-                        <div className="sim-row">
-                            <Tooltip content="1% fee charged by the platform for facilitating the loan.">
-                                <span style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
-                                    Platform Fee (1%) <HelpCircle size={12} />
-                                </span>
-                            </Tooltip>
-                            <span className="text-error">
-                                -<CountUp end={platformFee} prefix="$" decimals={2} separator="," duration={1} />
-                            </span>
-                        </div>
-                        <div className="sim-divider"></div>
-                        <div className="sim-row total">
-                            <span>You Receive</span>
-                            <span className="text-highlight">
-                                <CountUp end={netReceive} prefix="$" decimals={2} separator="," duration={1.5} />
-                            </span>
-                        </div>
-                    </div>
+                    <LoanEducation 
+                        collateralAmount={numericAmount}
+                        collateralValueUSD={collateralValue}
+                        borrowAmount={loanAmount}
+                        platformFee={platformFee}
+                        netReceived={netReceive}
+                        apy={strategy.apy}
+                        protocol={strategy.protocol}
+                        tokenSymbol={tokenSymbol}
+                    />
                 )}
 
                 {/* Signing Info */}

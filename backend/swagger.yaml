@@ -1,27 +1,57 @@
 openapi: 3.0.0
 info:
-  title: DedlyFi Loans API
-  description: High-performance API for aggregating DeFi lending opportunities across multiple chains.
-  version: 1.0.0
+  title: DedlyFi Loans API V2
+  description: |
+    Production-ready API for decentralized collateralized lending.
+    
+    Features:
+    - Multi-protocol lending aggregation
+    - Real-time position monitoring
+    - Automated liquidation system
+    - Transparent fee structure
+    
+    **Bull Board Dashboard:** [/admin/queues](/admin/queues)
+  version: 2.0.0
+  contact:
+    name: DedlyFi Team
+    email: support@dedlyfi.com
+
 servers:
   - url: http://localhost:3001/api
     description: Local development server
+  - url: https://api.dedlyfi.com/api
+    description: Production server
+
+tags:
+  - name: Opportunities
+    description: Lending opportunities across protocols
+  - name: Positions
+    description: User loan positions management
+  - name: Users
+    description: User management and statistics
+  - name: Platform
+    description: Platform-wide statistics
+
 paths:
-  /opportunities:
+  # ============ Opportunities ============
+  /loans/opportunities:
     get:
+      tags:
+        - Opportunities
       summary: Get lending opportunities
-      description: Retrieve the best lending/staking opportunities for a specific asset.
+      description: Retrieve best lending rates for a specific collateral token
       parameters:
         - in: query
           name: token
           schema:
             type: string
-            enum: [WETH, WBTC]
+            enum: [WETH, WBTC, ETH]
           required: true
-          description: The asset symbol (e.g., WETH, WBTC)
+          description: Collateral token symbol
+          example: WETH
       responses:
         '200':
-          description: A list of opportunities
+          description: List of available lending opportunities
           content:
             application/json:
               schema:
@@ -29,27 +59,421 @@ paths:
                 properties:
                   success:
                     type: boolean
+                    example: true
                   data:
                     type: array
                     items:
-                      type: object
-                      properties:
-                        protocol:
-                          type: string
-                          example: Uniswap
-                        type:
-                          type: string
-                          example: Liquidity
-                        apy:
-                          type: string
-                          example: 5.2%
-                        tvl:
-                          type: string
-                          example: $74.28M
-                        risk:
-                          type: string
-                          example: Medium
-                        adapter:
-                          type: string
-                        logo:
-                          type: string
+                      $ref: '#/components/schemas/Opportunity'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  # ============ Positions ============
+  /loans/positions:
+    post:
+      tags:
+        - Positions
+      summary: Create new loan position
+      description: Record a new collateralized loan position
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePositionRequest'
+      responses:
+        '201':
+          description: Position created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  position:
+                    $ref: '#/components/schemas/Position'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          description: Position with this transaction hash already exists
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /loans/positions/{address}:
+    get:
+      tags:
+        - Positions
+      summary: Get user positions
+      description: Retrieve all positions for a specific user address
+      parameters:
+        - in: path
+          name: address
+          required: true
+          schema:
+            type: string
+            pattern: '^0x[a-fA-F0-9]{40}$'
+          description: Ethereum address
+          example: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb'
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum: [active, repaid, liquidated, pending]
+          description: Filter by position status
+        - in: query
+          name: protocol
+          schema:
+            type: string
+            enum: [Uniswap, Aave, Lido]
+          description: Filter by protocol
+      responses:
+        '200':
+          description: User positions retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  count:
+                    type: integer
+                    example: 5
+                  positions:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Position'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /loans/position/{id}:
+    get:
+      tags:
+        - Positions
+      summary: Get position by ID
+      description: Retrieve detailed information about a specific position
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Position ID (MongoDB ObjectId)
+          example: '507f1f77bcf86cd799439011'
+      responses:
+        '200':
+          description: Position details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  position:
+                    $ref: '#/components/schemas/PositionDetailed'
+        '404':
+          description: Position not found
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /loans/stats:
+    get:
+      tags:
+        - Platform
+      summary: Get platform statistics
+      description: Retrieve platform-wide lending statistics
+      responses:
+        '200':
+          description: Platform statistics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  stats:
+                    $ref: '#/components/schemas/PlatformStats'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  # ============ Users ============
+  /users/connect:
+    post:
+      tags:
+        - Users
+      summary: Register user connection
+      description: Record when a user connects their wallet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - address
+              properties:
+                address:
+                  type: string
+                  pattern: '^0x[a-fA-F0-9]{40}$'
+                  example: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb'
+      responses:
+        '200':
+          description: User registered/updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'User registered'
+                  user:
+                    $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+# ============ Components ============
+components:
+  schemas:
+    Opportunity:
+      type: object
+      properties:
+        protocol:
+          type: string
+          example: Uniswap
+        adapter:
+          type: string
+          example: '0x5e01a1cBdfddA63D20d74E121B778d87A5AC0178'
+        apy:
+          type: string
+          example: '5.38%'
+        tvl:
+          type: string
+          example: '$2.5M'
+        risk:
+          type: string
+          enum: [Low, Medium, High]
+          example: Low
+        logo:
+          type: string
+          example: '/icons/uniswap.png'
+
+    CreatePositionRequest:
+      type: object
+      required:
+        - userAddress
+        - protocol
+        - tokenSymbol
+        - collateralAmount
+        - borrowAmount
+        - txHash
+      properties:
+        userAddress:
+          type: string
+          pattern: '^0x[a-fA-F0-9]{40}$'
+          example: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb'
+        protocol:
+          type: string
+          enum: [Uniswap, Aave, Lido]
+          example: Uniswap
+        adapterAddress:
+          type: string
+          pattern: '^0x[a-fA-F0-9]{40}$'
+          example: '0x5e01a1cBdfddA63D20d74E121B778d87A5AC0178'
+        tokenSymbol:
+          type: string
+          enum: [WETH, WBTC, ETH]
+          example: WETH
+        tokenAddress:
+          type: string
+          pattern: '^0x[a-fA-F0-9]{40}$'
+          example: '0x918530d86c239f92E58A98CE8ed446DC042613DB'
+        collateralAmount:
+          type: number
+          example: 10.5
+        collateralValueUSD:
+          type: number
+          example: 26250.00
+        borrowAmount:
+          type: number
+          example: 18375.00
+        platformFee:
+          type: number
+          example: 183.75
+        netReceived:
+          type: number
+          example: 18191.25
+        apy:
+          type: string
+          example: '5.38%'
+        ltv:
+          type: number
+          example: 0.70
+        txHash:
+          type: string
+          pattern: '^0x[a-fA-F0-9]{64}$'
+          example: '0xabc123...'
+        blockNumber:
+          type: integer
+          example: 1234567
+        network:
+          type: string
+          enum: [sepolia, mainnet, polygon, arbitrum]
+          example: sepolia
+
+    Position:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '507f1f77bcf86cd799439011'
+        userAddress:
+          type: string
+          example: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb'
+        protocol:
+          type: string
+          example: Uniswap
+        tokenSymbol:
+          type: string
+          example: WETH
+        collateralAmount:
+          type: number
+          example: 10.5
+        borrowAmount:
+          type: number
+          example: 18375.00
+        netReceived:
+          type: number
+          example: 18191.25
+        apy:
+          type: string
+          example: '5.38%'
+        txHash:
+          type: string
+          example: '0xabc123...'
+        status:
+          type: string
+          enum: [active, repaid, liquidated, pending]
+          example: active
+        healthFactor:
+          type: number
+          example: 1.43
+        createdAt:
+          type: string
+          format: date-time
+          example: '2025-12-05T21:00:00.000Z'
+
+    PositionDetailed:
+      allOf:
+        - $ref: '#/components/schemas/Position'
+        - type: object
+          properties:
+            collateralValueUSD:
+              type: number
+              example: 26250.00
+            platformFee:
+              type: number
+              example: 183.75
+            currentDebt:
+              type: number
+              example: 18500.00
+            accruedInterest:
+              type: number
+              example: 125.00
+
+    User:
+      type: object
+      properties:
+        address:
+          type: string
+          example: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb'
+        totalPositions:
+          type: integer
+          example: 5
+        activePositions:
+          type: integer
+          example: 2
+        totalBorrowed:
+          type: number
+          example: 50000.00
+        totalRepaid:
+          type: number
+          example: 30000.00
+        firstConnectedAt:
+          type: string
+          format: date-time
+        lastConnectedAt:
+          type: string
+          format: date-time
+        connectionCount:
+          type: integer
+          example: 15
+
+    PlatformStats:
+      type: object
+      properties:
+        totalPositions:
+          type: integer
+          example: 1250
+        activePositions:
+          type: integer
+          example: 450
+        totalBorrowed:
+          type: number
+          example: 5250000.00
+        totalRepaid:
+          type: number
+          example: 3100000.00
+        atRiskCount:
+          type: integer
+          example: 12
+        liquidatableCount:
+          type: integer
+          example: 3
+
+  responses:
+    BadRequest:
+      description: Bad request - invalid parameters
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                example: 'Invalid Ethereum address format'
+
+    InternalError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                example: 'Internal Server Error'
+              message:
+                type: string
+                example: 'Database connection failed'

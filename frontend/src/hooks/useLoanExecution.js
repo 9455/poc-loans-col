@@ -60,6 +60,53 @@ export const useLoanExecution = () => {
           setTxHash(mockHash);
           setStatus('SUCCESS');
           logger.info("Mock Loan Executed Successfully", { txHash: mockHash });
+          
+          // 3. Save position to backend with complete data
+          try {
+              const tokenConfig = TOKENS[tokenSymbol];
+              const amountNum = parseFloat(amount);
+              
+              // Calculate loan details (70% LTV, 1% fee)
+              const MOCK_PRICES = { WETH: 2500, WBTC: 65000, ETH: 2500 };
+              const collateralValueUSD = amountNum * MOCK_PRICES[tokenSymbol];
+              const loanAmount = collateralValueUSD * 0.70;
+              const platformFee = loanAmount * 0.01;
+              const netReceived = loanAmount - platformFee;
+              
+              const response = await fetch(`${import.meta.env.VITE_API_URL.replace('/api', '')}/api/loans/positions`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                      userAddress,
+                      protocol: strategy.protocol,
+                      adapterAddress: strategy.adapter,
+                      tokenSymbol,
+                      tokenAddress: tokenConfig.address,
+                      collateralAmount: amountNum,
+                      collateralValueUSD,
+                      borrowAmount: loanAmount,
+                      platformFee,
+                      netReceived,
+                      apy: strategy.apy,
+                      ltv: 0.70,
+                      txHash: mockHash,
+                      blockNumber: null, // Mock mode doesn't have real block
+                      network: 'sepolia'
+                  })
+              });
+              
+              const data = await response.json();
+              
+              if (!data.success) {
+                  throw new Error(data.error || 'Failed to save position');
+              }
+              
+              logger.info("Position saved to backend", { positionId: data.position.id });
+          } catch (err) {
+              logger.error("Failed to save position", err);
+              // Don't throw - position saving failure shouldn't stop the flow
+          }
+          
           return mockHash;
       }
 

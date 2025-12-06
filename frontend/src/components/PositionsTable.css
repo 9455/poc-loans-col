@@ -1,0 +1,398 @@
+/* Positions Container */
+.positions-container {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Header */
+.positions-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.total-value-card {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(147, 51, 234, 0.1) 100%);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 16px;
+    padding: 1.5rem 2rem;
+    flex: 1;
+    min-width: 300px;
+}
+
+.total-label {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.total-amount {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+}
+
+.total-amount .currency {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.positions-count {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    display: block;
+    margin-top: 0.5rem;
+}
+
+/* Sort Controls */
+.sort-controls {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.sort-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.sort-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(59, 130, 246, 0.3);
+    color: var(--text-primary);
+}
+
+.sort-btn.active {
+    background: rgba(59, 130, 246, 0.15);
+    border-color: rgba(59, 130, 246, 0.4);
+    color: var(--primary);
+}
+
+/* Positions Table */
+.positions-table {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* Position Row */
+.position-row {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 1.5rem;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1.2fr 1.5fr 1.8fr 1.2fr;
+    gap: 1.5rem;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.position-row:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(59, 130, 246, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+/* Position Cell */
+.position-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.cell-label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+/* Protocol Cell */
+.protocol-cell {
+    gap: 0.75rem;
+}
+
+.protocol-info-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.protocol-icons {
+    position: relative;
+    width: 48px;
+    height: 48px;
+}
+
+.protocol-logo {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.token-logo-badge {
+    position: absolute;
+    bottom: -4px;
+    right: -4px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid var(--bg-primary);
+}
+
+.protocol-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.protocol-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.token-amount {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.position-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.375rem 0.75rem;
+    background: rgba(34, 197, 94, 0.1);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--success);
+    width: fit-content;
+}
+
+.position-status.confirmed::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: var(--success);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* APY Cell */
+.apy-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--success);
+}
+
+/* Date Cell */
+.date-value {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.time-value {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+/* Value Cell */
+.value-amount {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.currency-small {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.token-count {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+/* Health Cell */
+.health-cell {
+    gap: 0.5rem;
+}
+
+.health-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+.health-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.health-value {
+    font-size: 1.125rem;
+    font-weight: 700;
+}
+
+.health-bar-container {
+    width: 100%;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.health-bar {
+    height: 100%;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 8px currentColor;
+}
+
+.health-status {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-align: right;
+}
+
+/* Actions Cell */
+.actions-cell {
+    flex-direction: row;
+    gap: 0.5rem;
+    justify-content: flex-end;
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1rem;
+    border-radius: 10px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.view-btn {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--primary);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    text-decoration: none;
+}
+
+.view-btn:hover {
+    background: rgba(59, 130, 246, 0.2);
+    border-color: rgba(59, 130, 246, 0.5);
+    transform: translateY(-1px);
+}
+
+.manage-btn {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+    border: none;
+    padding: 0.625rem 1.25rem;
+}
+
+.manage-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .position-row {
+        grid-template-columns: 2fr 1fr 1fr 1.5fr 1.5fr 1fr;
+        gap: 1rem;
+        padding: 1.25rem;
+    }
+}
+
+@media (max-width: 968px) {
+    .position-row {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .protocol-cell,
+    .apy-cell,
+    .date-cell,
+    .value-cell,
+    .health-cell {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        padding-bottom: 0.75rem;
+    }
+    
+    .actions-cell {
+        padding-top: 0.5rem;
+        justify-content: stretch;
+    }
+    
+    .action-btn {
+        flex: 1;
+    }
+}
+
+@media (max-width: 640px) {
+    .positions-container {
+        padding: 1rem;
+    }
+    
+    .positions-header {
+        flex-direction: column;
+    }
+    
+    .total-value-card {
+        width: 100%;
+    }
+    
+    .sort-controls {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .sort-btn {
+        flex: 1;
+        justify-content: center;
+        padding: 0.625rem 0.75rem;
+        font-size: 0.75rem;
+    }
+}

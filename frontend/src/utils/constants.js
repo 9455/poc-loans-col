@@ -12,6 +12,12 @@ export const TOKENS = {
     decimals: 8,
     symbol: "WBTC",
     icon: "/icons/btc.png"
+  },
+  USDC: {
+    address: import.meta.env.VITE_TOKEN_USDC || '0xd28824F4515fA0FeDD052eA70369EA6175a4e18b', 
+    decimals: 6,
+    symbol: "USDC",
+    icon: "/icons/dedlyfi.png"
   }
 };
 
