@@ -49,7 +49,7 @@ async function main() {
           console.log("   ⚠️  No se pudo leer decimals, asumiendo 18.");
       }
 
-      const amountToMint = symbol === 'WBTC' ? "1" : "100000"; // 1 WBTC o 100000 de otros
+      const amountToMint = symbol === 'WBTC' ? "1" : "10000000"; // 1 WBTC o 10000000 de otros
       const amount = ethers.parseUnits(amountToMint, decimals);
       
       // Verificar balance actual

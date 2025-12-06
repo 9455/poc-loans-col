@@ -224,10 +224,36 @@ export default function PositionsList({ positions }) {
                                         </div>
                                     </Tooltip>
                                 </div>
-                                {/* Health Bar */}
-                                <Tooltip content={`Safety Buffer: ${((hf-1)*100).toFixed(0)}% above liquidation.`}>
-                                    <div style={{ width: '100%', height: '4px', backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: '2px', marginTop: '4px', overflow: 'hidden', cursor: 'help' }}>
-                                        <div style={{ width: `${Math.min((hf / 2.0) * 100, 100)}%`, height: '100%', backgroundColor: hfColor, transition: 'width 0.5s ease-out' }} />
+                                {/* Traffic Light Health Bar */}
+                                <Tooltip content={`Current Health: ${hf.toFixed(2)}. Liquidation at < 1.0`}>
+                                    <div style={{ position: 'relative', width: '100%', marginTop: '6px', height: '12px' }}>
+                                        {/* Gradient Bar */}
+                                        <div style={{ 
+                                            width: '100%', 
+                                            height: '6px', 
+                                            background: 'linear-gradient(90deg, #ef4444 0%, #ef4444 20%, #f59e0b 40%, #f59e0b 60%, #22c55e 80%, #22c55e 100%)', 
+                                            borderRadius: '3px',
+                                            marginTop: '3px'
+                                        }} />
+                                        
+                                        {/* Marker */}
+                                        <div style={{ 
+                                            position: 'absolute',
+                                            top: -2,
+                                            left: `${Math.min(Math.max((hf - 0.5) / (2.5 - 0.5) * 100, 0), 100)}%`, // Map 0.5->0% to 2.5->100%
+                                            transform: 'translateX(-50%)',
+                                            width: '4px',
+                                            height: '16px',
+                                            background: '#fff',
+                                            border: '1px solid #000',
+                                            borderRadius: '2px',
+                                            boxShadow: '0 0 4px rgba(0,0,0,0.5)',
+                                            transition: 'left 0.5s ease-out'
+                                        }} />
+                                    </div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.65rem', color: '#6b7280', marginTop: '2px' }}>
+                                        <span>Risk</span>
+                                        <span>Safe</span>
                                     </div>
                                 </Tooltip>
                             </div>

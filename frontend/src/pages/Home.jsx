@@ -137,6 +137,7 @@ export default function Home() {
             {/* Loan Modal */}
             {selectedStrategy && selectedToken && (
                 <LoanModal
+                    isOpen={!!selectedStrategy}
                     strategy={selectedStrategy}
                     tokenSymbol={selectedToken}
                     userAddress={address}

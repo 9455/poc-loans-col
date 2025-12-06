@@ -1,4 +1,5 @@
-import { Info, AlertTriangle, TrendingDown, DollarSign, Percent, Clock } from 'lucide-react';
+import React, { useState } from 'react';
+import { Info, AlertTriangle, TrendingDown, DollarSign, Percent, Clock, ShieldCheck, Activity } from 'lucide-react';
 import './LoanEducation.css';
 
 export function LoanEducation({ 
@@ -11,6 +12,8 @@ export function LoanEducation({
     protocol,
     tokenSymbol 
 }) {
+    const [activeTab, setActiveTab] = useState('fees'); // 'fees' | 'risk' | 'projections'
+
     // Calculate interest examples
     const calculateInterest = (months) => {
         const apyDecimal = parseFloat(apy) / 100;
@@ -28,191 +31,165 @@ export function LoanEducation({
     const liquidationPrice = (borrowAmount / (collateralAmount * liquidationThreshold));
     const priceDropPercent = ((currentPrice - liquidationPrice) / currentPrice) * 100;
 
+    const TabButton = ({ id, icon: Icon, label }) => (
+        <button 
+            onClick={() => setActiveTab(id)}
+            style={{
+                flex: 1,
+                background: activeTab === id ? 'rgba(59, 130, 246, 0.1)' : 'transparent',
+                border: 'none',
+                borderBottom: activeTab === id ? '2px solid #3b82f6' : '2px solid transparent',
+                color: activeTab === id ? '#3b82f6' : '#6b7280',
+                padding: '0.75rem 0.5rem',
+                fontSize: '0.85rem',
+                fontWeight: '600',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.5rem',
+                transition: 'all 0.2s'
+            }}
+        >
+            <Icon size={16} />
+            {label}
+        </button>
+    );
+
     return (
-        <div className="loan-education">
-            {/* Fee Breakdown */}
-            <div className="education-section">
-                <div className="section-header">
-                    <DollarSign size={20} />
-                    <h4>💰 Fee Breakdown</h4>
-                </div>
-
-                <div className="fee-cards">
-                    {/* Platform Fee */}
-                    <div className="fee-card platform-fee">
-                        <div className="fee-card-header">
-                            <span className="fee-label">Platform Fee (1%)</span>
-                            <Info size={16} className="info-icon" />
-                        </div>
-                        <div className="fee-amount">${platformFee.toFixed(2)}</div>
-                        <div className="fee-description">
-                            <strong>One-time fee</strong> charged by DedlyFi for facilitating your loan.
-                            This covers smart contract execution, security, and platform maintenance.
-                        </div>
-                        <div className="fee-recipient">
-                            → Goes to: <strong>DedlyFi Platform</strong>
-                        </div>
-                    </div>
-
-                    {/* Protocol Interest */}
-                    <div className="fee-card protocol-fee">
-                        <div className="fee-card-header">
-                            <span className="fee-label">Protocol Interest ({apy})</span>
-                            <Info size={16} className="info-icon" />
-                        </div>
-                        <div className="fee-amount interest-amount">
-                            ~${interest1Year.toFixed(2)}<span className="period">/year</span>
-                        </div>
-                        <div className="fee-description">
-                            <strong>Continuous interest</strong> charged by {protocol} lending protocol.
-                            Accrues per block (~12 seconds). No monthly payments required.
-                        </div>
-                        <div className="fee-recipient">
-                            → Goes to: <strong>{protocol} Liquidity Providers</strong>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Total You Receive */}
-                <div className="total-receive">
-                    <div className="total-label">You Receive (After Platform Fee)</div>
-                    <div className="total-amount">${netReceived.toLocaleString('en-US', { minimumFractionDigits: 2 })} USDC</div>
-                </div>
+        <div className="loan-education" style={{ background: '#0f172a', borderRadius: '12px', border: '1px solid #1e293b', overflow: 'hidden' }}>
+            
+            {/* Tabs Header */}
+            <div style={{ display: 'flex', borderBottom: '1px solid #1e293b' }}>
+                <TabButton id="fees" icon={DollarSign} label="Fees & Yield" />
+                <TabButton id="risk" icon={AlertTriangle} label="Risk Analysis" />
+                <TabButton id="projections" icon={Activity} label="Projections" />
             </div>
 
-            {/* Interest Timeline */}
-            <div className="education-section">
-                <div className="section-header">
-                    <Clock size={20} />
-                    <h4>📈 Interest Over Time</h4>
-                </div>
-
-                <div className="interest-timeline">
-                    <div className="timeline-item">
-                        <div className="timeline-period">1 Month</div>
-                        <div className="timeline-bar">
-                            <div className="timeline-fill" style={{ width: '16.67%' }} />
+            {/* Content Area */}
+            <div style={{ padding: '0.75rem', minHeight: '180px' }}> {/* Reduced padding & min-height */}
+                
+                {/* TAB 1: FEES & OVERVIEW */}
+                {activeTab === 'fees' && (
+                    <div className="animate-fade-in">
+                        <div style={{ marginBottom: '0.75rem', textAlign: 'center' }}>
+                            <p style={{ color: '#94a3b8', fontSize: '0.8rem', marginBottom: '0.1rem' }}>You receive (after fees)</p>
+                            <h3 style={{ fontSize: '1.5rem', color: '#22c55e', margin: 0 }}>
+                                ${netReceived.toLocaleString('en-US', { minimumFractionDigits: 2 })} <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>USDC</span>
+                            </h3>
                         </div>
-                        <div className="timeline-amount">+${interest1Month.toFixed(2)}</div>
-                        <div className="timeline-total">Total Debt: ${(borrowAmount + interest1Month).toFixed(2)}</div>
-                    </div>
 
-                    <div className="timeline-item">
-                        <div className="timeline-period">6 Months</div>
-                        <div className="timeline-bar">
-                            <div className="timeline-fill" style={{ width: '50%' }} />
-                        </div>
-                        <div className="timeline-amount">+${interest6Months.toFixed(2)}</div>
-                        <div className="timeline-total">Total Debt: ${(borrowAmount + interest6Months).toFixed(2)}</div>
-                    </div>
+                        <div className="fee-cards" style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '0.5rem' }}>
+                            {/* Platform Fee */}
+                            <div className="fee-card platform-fee" style={{ padding: '0.75rem', background: '#1e293b', borderRadius: '6px', border: '1px solid #334155' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.25rem' }}>
+                                    <span style={{ color: '#e2e8f0', fontWeight: '500', fontSize: '0.85rem' }}>Platform Fee (1%)</span>
+                                    <span style={{ color: '#ef4444', fontWeight: 'bold', fontSize: '0.85rem' }}>-${platformFee.toFixed(2)}</span>
+                                </div>
+                                <div style={{ fontSize: '0.7rem', color: '#94a3b8', lineHeight: '1.2' }}>
+                                    One-time fee covers execution & security.
+                                </div>
+                            </div>
 
-                    <div className="timeline-item">
-                        <div className="timeline-period">1 Year</div>
-                        <div className="timeline-bar">
-                            <div className="timeline-fill" style={{ width: '100%' }} />
-                        </div>
-                        <div className="timeline-amount">+${interest1Year.toFixed(2)}</div>
-                        <div className="timeline-total">Total Debt: ${(borrowAmount + interest1Year).toFixed(2)}</div>
-                    </div>
-                </div>
-
-                <div className="interest-note">
-                    <Info size={16} />
-                    <span>
-                        Interest accrues continuously (every ~12 seconds). You can repay anytime without penalties.
-                    </span>
-                </div>
-            </div>
-
-            {/* Liquidation Risk */}
-            <div className="education-section liquidation-section">
-                <div className="section-header warning">
-                    <AlertTriangle size={20} />
-                    <h4>⚠️ Liquidation Risk</h4>
-                </div>
-
-                <div className="liquidation-info">
-                    <div className="liquidation-card">
-                        <div className="liquidation-label">Current {tokenSymbol} Price</div>
-                        <div className="liquidation-value current-price">${currentPrice.toLocaleString('en-US', { minimumFractionDigits: 2 })}</div>
-                    </div>
-
-                    <TrendingDown size={32} className="arrow-down" />
-
-                    <div className="liquidation-card danger">
-                        <div className="liquidation-label">Liquidation Price</div>
-                        <div className="liquidation-value liquidation-price">${liquidationPrice.toLocaleString('en-US', { minimumFractionDigits: 2 })}</div>
-                        <div className="price-drop">({priceDropPercent.toFixed(1)}% drop)</div>
-                    </div>
-                </div>
-
-                <div className="liquidation-explanation">
-                    <div className="explanation-title">What happens if liquidated?</div>
-                    <ul className="explanation-list">
-                        <li>
-                            <strong>You lose your collateral:</strong> Your {collateralAmount.toFixed(4)} {tokenSymbol} will be sold to repay the debt.
-                        </li>
-                        <li>
-                            <strong>Liquidation penalty:</strong> A 5% bonus is paid to the liquidator from your collateral.
-                        </li>
-                        <li>
-                            <strong>You keep the USDC:</strong> The ${netReceived.toFixed(2)} USDC you received is yours to keep.
-                        </li>
-                    </ul>
-                </div>
-
-                <div className="safety-tips">
-                    <div className="tip-title">🛡️ How to Stay Safe</div>
-                    <div className="tips-grid">
-                        <div className="tip">
-                            <Percent size={16} />
-                            <span>Keep Health Factor above <strong>1.5</strong></span>
-                        </div>
-                        <div className="tip">
-                            <TrendingDown size={16} />
-                            <span>Monitor {tokenSymbol} price regularly</span>
-                        </div>
-                        <div className="tip">
-                            <DollarSign size={16} />
-                            <span>Add collateral if price drops</span>
-                        </div>
-                        <div className="tip">
-                            <Clock size={16} />
-                            <span>Repay early to reduce risk</span>
+                            {/* Loan Summary Mini */}
+                            <div style={{ padding: '0.75rem', background: 'rgba(59, 130, 246, 0.05)', borderRadius: '6px', border: '1px solid rgba(59, 130, 246, 0.2)' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.25rem', fontSize: '0.8rem' }}>
+                                    <span style={{ color: '#94a3b8' }}>Collateral Locked</span>
+                                    <span style={{ color: '#fff' }}>{collateralAmount.toFixed(4)} {tokenSymbol}</span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.25rem', fontSize: '0.8rem' }}>
+                                    <span style={{ color: '#94a3b8' }}>Loan Amount</span>
+                                    <span style={{ color: '#fff' }}>${borrowAmount.toFixed(2)}</span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0', fontSize: '0.8rem' }}>
+                                    <span style={{ color: '#94a3b8' }}>Protocol APY</span>
+                                    <span style={{ color: '#f59e0b' }}>{apy}</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                )}
 
-            {/* Summary */}
-            <div className="education-summary">
-                <div className="summary-title">📊 Loan Summary</div>
-                <div className="summary-grid">
-                    <div className="summary-item">
-                        <span className="summary-label">You Deposit</span>
-                        <span className="summary-value">{collateralAmount.toFixed(4)} {tokenSymbol}</span>
+                {/* TAB 2: RISK ANALYSIS */}
+                {activeTab === 'risk' && (
+                    <div className="animate-fade-in">
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', justifyContent: 'center', marginBottom: '2rem', marginTop: '1rem' }}>
+                            <div style={{ textAlign: 'center' }}>
+                                <div style={{ fontSize: '0.8rem', color: '#94a3b8', marginBottom: '0.25rem' }}>Current Price</div>
+                                <div style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#fff' }}>${currentPrice.toLocaleString()}</div>
+                            </div>
+                            <div style={{ color: '#ef4444', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                <TrendingDown size={20} />
+                                <span style={{ fontSize: '0.75rem', fontWeight: 'bold' }}>-{priceDropPercent.toFixed(1)}%</span>
+                            </div>
+                            <div style={{ textAlign: 'center' }}>
+                                <div style={{ fontSize: '0.8rem', color: '#94a3b8', marginBottom: '0.25rem' }}>Liquidation Price</div>
+                                <div style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#ef4444' }}>${liquidationPrice.toLocaleString()}</div>
+                            </div>
+                        </div>
+
+                        <div style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)', borderRadius: '8px', padding: '1rem', marginBottom: '1rem' }}>
+                            <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem', color: '#ef4444', fontWeight: '600', fontSize: '0.9rem' }}>
+                                <AlertTriangle size={16} /> Liquidation Penalty
+                            </div>
+                            <p style={{ fontSize: '0.85rem', color: '#cbd5e1', margin: 0, lineHeight: '1.4' }}>
+                                If price hits <strong>${liquidationPrice.toFixed(2)}</strong>, your collateral is sold with a <strong>5% penalty</strong>. You keep the borrowed USDC together with the penalty.
+                            </p>
+                        </div>
+
+                        <div className="safety-tips" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+                            <div style={{ background: '#1e293b', padding: '0.75rem', borderRadius: '6px', fontSize: '0.8rem', color: '#94a3b8', display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                                <Percent size={14} color="#3b82f6" /> Keep Health Factor {'>'} 1.5
+                            </div>
+                            <div style={{ background: '#1e293b', padding: '0.75rem', borderRadius: '6px', fontSize: '0.8rem', color: '#94a3b8', display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                                <Clock size={14} color="#3b82f6" /> Repay anytime
+                            </div>
+                        </div>
                     </div>
-                    <div className="summary-item">
-                        <span className="summary-label">Collateral Value</span>
-                        <span className="summary-value">${collateralValueUSD.toLocaleString()}</span>
+                )}
+
+                {/* TAB 3: PROJECTIONS */}
+                {activeTab === 'projections' && (
+                    <div className="animate-fade-in">
+                        <div style={{ marginBottom: '1.5rem' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#f59e0b', fontSize: '0.9rem', marginBottom: '1rem' }}>
+                                <Activity size={16} /> 
+                                <span>Interest accrues continuously ({apy})</span>
+                            </div>
+                            
+                            <div style={{ display: 'grid', gap: '1rem' }}>
+                                {/* 1 Month */}
+                                <div style={{ background: '#1e293b', padding: '1rem', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                                        <div style={{ width: '4px', height: '24px', background: '#3b82f6', borderRadius: '2px' }}></div>
+                                        <span style={{ color: '#fff' }}>1 Month</span>
+                                    </div>
+                                    <div style={{ textAlign: 'right' }}>
+                                        <div style={{ color: '#ef4444', fontWeight: '600' }}>+${interest1Month.toFixed(2)}</div>
+                                        <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Interest</div>
+                                    </div>
+                                </div>
+
+                                {/* 1 Year */}
+                                <div style={{ background: '#1e293b', padding: '1rem', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                                        <div style={{ width: '4px', height: '24px', background: '#8b5cf6', borderRadius: '2px' }}></div>
+                                        <span style={{ color: '#fff' }}>1 Year</span>
+                                    </div>
+                                    <div style={{ textAlign: 'right' }}>
+                                        <div style={{ color: '#ef4444', fontWeight: '600' }}>+${interest1Year.toFixed(2)}</div>
+                                        <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Interest</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style={{ fontSize: '0.8rem', color: '#64748b', fontStyle: 'italic', textAlign: 'center' }}>
+                            Estimates based on current APY. Rates are variable and set by the {protocol} protocol.
+                        </div>
                     </div>
-                    <div className="summary-item">
-                        <span className="summary-label">You Receive</span>
-                        <span className="summary-value highlight">${netReceived.toLocaleString()} USDC</span>
-                    </div>
-                    <div className="summary-item">
-                        <span className="summary-label">Interest Rate</span>
-                        <span className="summary-value">{apy} APY</span>
-                    </div>
-                    <div className="summary-item">
-                        <span className="summary-label">Loan-to-Value</span>
-                        <span className="summary-value">70%</span>
-                    </div>
-                    <div className="summary-item">
-                        <span className="summary-label">Health Factor</span>
-                        <span className="summary-value success">1.43</span>
-                    </div>
-                </div>
+                )}
+
             </div>
         </div>
     );
